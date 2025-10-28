@@ -1,2 +1,633 @@
-429: Too Many Requests
-For more on scraping GitHub and how it may affect your rights, please review our Terms of Service (https://docs.github.com/en/site-policy/github-terms/github-terms-of-service).
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ThiagoFT Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            box-sizing: border-box;
+        }
+        
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(-45deg, #1a0033, #2d1b69, #0f0f23, #1e1e3f);
+            background-size: 400% 400%;
+            animation: gradientShift 8s ease infinite;
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .name-glow {
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #ffeaa7);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: colorShift 3s ease-in-out infinite, subtleFloat 4s ease-in-out infinite;
+        }
+        
+        @keyframes colorShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        @keyframes subtleFloat {
+            0%, 100% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-5px) scale(1.02); }
+        }
+        
+        .subtitle-container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        .subtitle-text {
+            color: #e2e8f0;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.2) 70%, transparent 100%);
+            border-radius: 50%;
+            animation: floatParticle 8s ease-in-out infinite;
+        }
+        
+        .particle:nth-child(odd) {
+            background: radial-gradient(circle, rgba(79,70,229,0.6) 0%, rgba(79,70,229,0.1) 70%, transparent 100%);
+            animation-duration: 10s;
+        }
+        
+        .particle:nth-child(3n) {
+            background: radial-gradient(circle, rgba(139,92,246,0.5) 0%, rgba(139,92,246,0.1) 70%, transparent 100%);
+            animation-duration: 12s;
+        }
+        
+        @keyframes floatParticle {
+            0% { 
+                transform: translateY(100vh) translateX(0px) rotate(0deg); 
+                opacity: 0; 
+            }
+            10% { 
+                opacity: 1; 
+            }
+            90% { 
+                opacity: 1; 
+            }
+            100% { 
+                transform: translateY(-100px) translateX(50px) rotate(360deg); 
+                opacity: 0; 
+            }
+        }
+        
+        .glow-button {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .glow-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(79, 70, 229, 0.4);
+        }
+        
+        .glow-button:active {
+            transform: translateY(0px);
+        }
+        
+        .project-card {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform-style: preserve-3d;
+        }
+        
+        .project-card:hover {
+            transform: translateY(-10px) rotateX(5deg) rotateY(5deg);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .skill-bar {
+            width: 0%;
+            transition: width 2s ease-in-out;
+        }
+        
+        .tab-content {
+            opacity: 0;
+            transform: translateX(20px);
+            transition: all 0.5s ease;
+        }
+        
+        .tab-content.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        .social-icon {
+            transition: all 0.3s ease;
+        }
+        
+        .social-icon:hover {
+            transform: scale(1.2) rotate(5deg);
+            filter: drop-shadow(0 0 10px currentColor);
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .slide-in {
+            animation: slideIn 0.8s ease-out forwards;
+        }
+  /* --- FIX: uniformiza posicionamento das abas e rodapé --- */
+main {
+    min-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.tab-content {
+    display: none;
+    position: relative;
+    animation: fadeSlideIn 0.5s ease forwards;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+@keyframes fadeSlideIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* remove gaps verticais extras */
+.tab-content > div {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+}
+
+/* mantém o footer sempre logo abaixo do conteúdo */
+footer {
+    margin-top: auto;
+}
+
+     /* deixa o QR code sem fundo e respeita transparência do arquivo PNG */
+.qr-img {
+    background: transparent !important;
+    box-shadow: none !important; /* se quiser remover sombra também */
+}
+
+        .qr-img {
+    background: transparent !important;
+}
+
+        
+    </style>
+    
+  
+
+</head>
+<body class="gradient-bg min-h-full text-white overflow-x-hidden">
+    <div id="particles-container" class="fixed inset-0 pointer-events-none z-0"></div>
+    
+    <!-- Navigation -->
+    <nav class="relative z-10 p-6">
+        <div class="max-w-6xl mx-auto">
+            <div class="flex justify-center space-x-1 bg-black/20 backdrop-blur-lg rounded-full p-2 border border-white/10 overflow-x-auto">
+                <button onclick="showTab('home')" class="tab-btn px-4 md:px-6 py-3 rounded-full transition-all duration-300 text-sm font-medium whitespace-nowrap" data-tab="home">
+                    <i class="fas fa-home mr-1 md:mr-2"></i><span class="hidden sm:inline">Home</span>
+                </button>
+                <button onclick="showTab('projects')" class="tab-btn px-4 md:px-6 py-3 rounded-full transition-all duration-300 text-sm font-medium whitespace-nowrap" data-tab="projects">
+                    <i class="fas fa-code mr-1 md:mr-2"></i><span class="hidden sm:inline">Projects</span>
+                </button>
+                <button onclick="showTab('about')" class="tab-btn px-4 md:px-6 py-3 rounded-full transition-all duration-300 text-sm font-medium whitespace-nowrap" data-tab="about">
+                    <i class="fas fa-user mr-1 md:mr-2"></i><span class="hidden sm:inline">About</span>
+                </button>
+                <button onclick="showTab('resume')" class="tab-btn px-4 md:px-6 py-3 rounded-full transition-all duration-300 text-sm font-medium whitespace-nowrap" data-tab="resume">
+                    <i class="fas fa-file-alt mr-1 md:mr-2"></i><span class="hidden sm:inline">Resume</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="relative z-10 max-w-6xl mx-auto px-6 pb-8">
+        
+        <!-- Home Tab -->
+        <div id="home" class="tab-content active">
+            <div class="text-center py-20 slide-in">
+                <h1 class="text-6xl md:text-8xl font-bold mb-6 name-glow">
+                    Thiago Fernandes Teodoro
+                </h1>
+                <div class="subtitle-container rounded-2xl p-6 mb-12 inline-block">
+                    <h2 class="text-2xl md:text-3xl font-light subtitle-text">
+                        Desenvolvedor Criativo | Entusiasta de Tecnologia | Sempre Construindo Ideias
+                    </h2>
+                </div>
+                
+                <!-- Social Links -->
+                <div class="flex flex-wrap justify-center gap-4 mb-12">
+                    <a href="https://instagram.com/thiagoteodoro201" target="_blank" rel="noopener noreferrer" class="glow-button social-icon bg-gradient-to-r from-pink-500 to-purple-600 px-6 py-3 rounded-full flex items-center space-x-2 text-white font-medium">
+                        <i class="fab fa-instagram text-xl"></i>
+                        <span>Instagram</span>
+                    </a>
+                    <a href="https://wa.me/5541991110413" target="_blank" rel="noopener noreferrer" class="glow-button social-icon bg-gradient-to-r from-green-500 to-green-600 px-6 py-3 rounded-full flex items-center space-x-2 text-white font-medium">
+                        <i class="fab fa-whatsapp text-xl"></i>
+                        <span>WhatsApp</span>
+                    </a>
+                    <a href="https://linkedin.com/in/thiago-fernandes-teodoro-355b15180/" target="_blank" rel="noopener noreferrer" class="glow-button social-icon bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-3 rounded-full flex items-center space-x-2 text-white font-medium">
+                        <i class="fab fa-linkedin text-xl"></i>
+                        <span>LinkedIn</span>
+                    </a>
+                    <a href="mailto:thiagoteodoro201@gmail.com" class="glow-button social-icon bg-gradient-to-r from-red-500 to-red-600 px-6 py-3 rounded-full flex items-center space-x-2 text-white font-medium">
+                        <i class="fas fa-envelope text-xl"></i>
+                        <span>Email</span>
+                    </a>
+                    <a href="https://thiagoft201.github.io/CardVisit/#" target="_blank" rel="noopener noreferrer" class="glow-button social-icon bg-gradient-to-r from-indigo-500 to-purple-600 px-6 py-3 rounded-full flex items-center space-x-2 text-white font-medium">
+                        <i class="fas fa-globe text-xl"></i>
+                        <span>Website</span>
+                    </a>
+                </div>
+                
+                <!-- Add Contact Button -->
+                <button onclick="addToContacts()" class="glow-button bg-gradient-to-r from-yellow-400 to-orange-500 px-8 py-4 rounded-full text-black font-bold text-lg flex items-center space-x-3 mx-auto">
+                    <i class="fas fa-address-book text-xl"></i>
+                    <span>Add to Contacts</span>
+                </button>
+            </div>
+                    <!-- QR Code centralizado e clicável -->
+<div class="mt-12 flex justify-center">
+  <a href="https://wa.link/ap2i8a" target="_blank" rel="noopener noreferrer">
+    <img src="qr-code.png" alt="QR Code" class="w-48 md:w-56 hover:scale-105 transition-transform duration-300 cursor-pointer rounded-xl shadow-lg" />
+  </a>
+</div>
+        </div>
+
+
+        <!-- Projects Tab -->
+        <div id="projects" class="tab-content">
+            <div class="py-8">
+                <h2 class="text-5xl font-bold text-center mb-8 slide-in">Meus Projetos</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="project-card bg-black/30 backdrop-blur-lg rounded-2xl p-6 border border-white/10 cursor-pointer" onclick="playClickSound()">
+                        <div class="w-full h-48 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl mb-4 flex items-center justify-center">
+                            <i class="fas fa-code text-4xl text-white"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Portfolio Website</h3>
+                        <p class="text-gray-300">Interactive personal portfolio with modern design and smooth animations.</p>
+                    </div>
+                    
+                    <div class="project-card bg-black/30 backdrop-blur-lg rounded-2xl p-6 border border-white/10 cursor-pointer" onclick="playClickSound()">
+                        <div class="w-full h-48 bg-gradient-to-br from-green-500 to-teal-600 rounded-xl mb-4 flex items-center justify-center">
+                            <i class="fas fa-mobile-alt text-4xl text-white"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Mobile App UI</h3>
+                        <p class="text-gray-300">Clean and intuitive mobile application interface design.</p>
+                    </div>
+                    
+                    <div class="project-card bg-black/30 backdrop-blur-lg rounded-2xl p-6 border border-white/10 cursor-pointer" onclick="playClickSound()">
+                        <div class="w-full h-48 bg-gradient-to-br from-red-500 to-pink-600 rounded-xl mb-4 flex items-center justify-center">
+                            <i class="fas fa-chart-line text-4xl text-white"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Data Dashboard</h3>
+                        <p class="text-gray-300">Interactive dashboard for data visualization and analytics.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- About Tab -->
+        <div id="about" class="tab-content">
+            <div class="py-8">
+                <div class="max-w-4xl mx-auto text-center">
+                    <div class="w-32 h-32 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full mx-auto mb-8 flex items-center justify-center">
+                        <i class="fas fa-user text-4xl text-white"></i>
+                    </div>
+                    <h2 class="text-5xl font-bold mb-8 slide-in">About Me</h2>
+                    <div class="bg-black/30 backdrop-blur-lg rounded-2xl p-8 border border-white/10">
+                        <p class="text-xl leading-relaxed text-gray-200 mb-6">
+                            I'm Thiago Fernandes Teodoro, a passionate developer who transitioned from administrative and operational roles to IT. I enjoy creating modern, interactive, user-focused digital experiences.
+                        </p>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+                            <div class="text-center">
+                                <i class="fas fa-lightbulb text-3xl text-yellow-400 mb-3"></i>
+                                <h3 class="font-bold text-lg">Creative Problem Solver</h3>
+                            </div>
+                            <div class="text-center">
+                                <i class="fas fa-rocket text-3xl text-blue-400 mb-3"></i>
+                                <h3 class="font-bold text-lg">Innovation Driven</h3>
+                            </div>
+                            <div class="text-center">
+                                <i class="fas fa-heart text-3xl text-red-400 mb-3"></i>
+                                <h3 class="font-bold text-lg">Passionate Developer</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resume Tab -->
+        <div id="resume" class="tab-content">
+            <div class="py-8">
+                <h2 class="text-5xl font-bold text-center mb-8 slide-in">Experience & Skills</h2>
+                
+                <!-- Skills Section -->
+                <div class="mb-16">
+                    <h3 class="text-3xl font-bold mb-8 text-center">Technical Skills</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="bg-black/30 backdrop-blur-lg rounded-2xl p-6 border border-white/10">
+                            <div class="mb-4">
+                                <div class="flex justify-between mb-2">
+                                    <span class="font-medium">JavaScript</span>
+                                    <span class="text-sm text-gray-300">90%</span>
+                                </div>
+                                <div class="w-full bg-gray-700 rounded-full h-2">
+                                    <div class="skill-bar bg-gradient-to-r from-yellow-400 to-orange-500 h-2 rounded-full" data-width="90"></div>
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <div class="flex justify-between mb-2">
+                                    <span class="font-medium">HTML/CSS</span>
+                                    <span class="text-sm text-gray-300">95%</span>
+                                </div>
+                                <div class="w-full bg-gray-700 rounded-full h-2">
+                                    <div class="skill-bar bg-gradient-to-r from-blue-400 to-blue-600 h-2 rounded-full" data-width="95"></div>
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <div class="flex justify-between mb-2">
+                                    <span class="font-medium">React</span>
+                                    <span class="text-sm text-gray-300">85%</span>
+                                </div>
+                                <div class="w-full bg-gray-700 rounded-full h-2">
+                                    <div class="skill-bar bg-gradient-to-r from-cyan-400 to-blue-500 h-2 rounded-full" data-width="85"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-black/30 backdrop-blur-lg rounded-2xl p-6 border border-white/10">
+                            <div class="mb-4">
+                                <div class="flex justify-between mb-2">
+                                    <span class="font-medium">UI/UX Design</span>
+                                    <span class="text-sm text-gray-300">80%</span>
+                                </div>
+                                <div class="w-full bg-gray-700 rounded-full h-2">
+                                    <div class="skill-bar bg-gradient-to-r from-pink-400 to-purple-500 h-2 rounded-full" data-width="80"></div>
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <div class="flex justify-between mb-2">
+                                    <span class="font-medium">Node.js</span>
+                                    <span class="text-sm text-gray-300">100%</span>
+                                </div>
+                                <div class="w-full bg-gray-700 rounded-full h-2">
+                                    <div class="skill-bar bg-gradient-to-r from-green-400 to-green-600 h-2 rounded-full" data-width="75"></div>
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <div class="flex justify-between mb-2">
+                                    <span class="font-medium">Database Management</span>
+                                    <span class="text-sm text-gray-300">70%</span>
+                                </div>
+                                <div class="w-full bg-gray-700 rounded-full h-2">
+                                    <div class="skill-bar bg-gradient-to-r from-indigo-400 to-purple-600 h-2 rounded-full" data-width="70"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Experience Timeline -->
+                <div class="mb-16">
+                    <h3 class="text-3xl font-bold mb-8 text-center">Career Journey</h3>
+                    <div class="space-y-8">
+                        <div class="bg-black/30 backdrop-blur-lg rounded-2xl p-6 border border-white/10 flex items-center space-x-4">
+                            <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                                <i class="fas fa-code text-white"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold">Frontend Developer</h4>
+                                <p class="text-gray-300">2023 - Present</p>
+                                <p class="text-sm text-gray-400">Creating modern web applications with focus on user experience</p>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-black/30 backdrop-blur-lg rounded-2xl p-6 border border-white/10 flex items-center space-x-4">
+                            <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-teal-600 rounded-full flex items-center justify-center">
+                                <i class="fas fa-cogs text-white"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold">IT Transition</h4>
+                                <p class="text-gray-300">2022 - 2023</p>
+                                <p class="text-sm text-gray-400">Career transition from operations to technology</p>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-black/30 backdrop-blur-lg rounded-2xl p-6 border border-white/10 flex items-center space-x-4">
+                            <div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-600 rounded-full flex items-center justify-center">
+                                <i class="fas fa-briefcase text-white"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold">Administrative & Operations</h4>
+                                <p class="text-gray-300">2018 - 2022</p>
+                                <p class="text-sm text-gray-400">Administrative and operational roles building foundation skills</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="relative z-10 border-t border-white/10 bg-black/20 backdrop-blur-lg">
+        <div class="max-w-6xl mx-auto px-6 py-8">
+            <div class="text-center">
+                <p class="text-gray-400">© 2025 ThiagoFT – All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize particles
+        function createParticles() {
+            const container = document.getElementById('particles-container');
+            for (let i = 0; i < 80; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 8 + 's';
+                particle.style.animationDuration = (Math.random() * 4 + 8) + 's';
+                container.appendChild(particle);
+            }
+        }
+
+        // Tab switching
+        function showTab(tabName) {
+            
+            // Hide all tabs
+document.querySelectorAll('.tab-content').forEach(tab => {
+    tab.classList.remove('active');
+    tab.style.display = 'none';
+});
+
+// Show selected tab
+const selectedTab = document.getElementById(tabName);
+selectedTab.classList.add('active');
+selectedTab.style.display = 'block';
+
+            
+            // Remove active state from all buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-white/20', 'text-white');
+                btn.classList.add('text-gray-300');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            
+            // Activate selected button
+            const activeBtn = document.querySelector(`[data-tab="${tabName}"]`);
+            activeBtn.classList.add('bg-white/20', 'text-white');
+            activeBtn.classList.remove('text-gray-300');
+            
+            // Animate skill bars if resume tab
+            if (tabName === 'resume') {
+                setTimeout(() => {
+                    document.querySelectorAll('.skill-bar').forEach(bar => {
+                        const width = bar.getAttribute('data-width');
+                        bar.style.width = width + '%';
+                    });
+                }, 300);
+            }
+            
+            playClickSound();
+        }
+
+        // Add to contacts function
+        function addToContacts() {
+            const contact = {
+                name: 'Thiago Fernandes Teodoro',
+                phone: '+55 41 991110413',
+                email: 'thiagoteodoro201@gmail.com',
+                website: 'https://thiagoft201.github.io/CardVisit/#',
+                address: 'Brazil'
+            };
+            
+            // Create vCard format
+            const vcard = `BEGIN:VCARD
+VERSION:3.0
+FN:${contact.name}
+TEL:${contact.phone}
+EMAIL:${contact.email}
+URL:${contact.website}
+ADR:;;;;;;${contact.address}
+END:VCARD`;
+            
+            // Create download link
+            const blob = new Blob([vcard], { type: 'text/vcard' });
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'thiago-teodoro-contact.vcf';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
+            
+            // Show success message
+            showNotification('Contact added successfully! Check your downloads.');
+            playClickSound();
+        }
+
+        // Show notification
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 transform translate-x-full transition-transform duration-300';
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.classList.remove('translate-x-full');
+            }, 100);
+            
+            setTimeout(() => {
+                notification.classList.add('translate-x-full');
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+
+        // Play click sound (visual feedback since audio isn't supported)
+        function playClickSound() {
+            // Create visual feedback instead of audio
+            const ripple = document.createElement('div');
+            ripple.className = 'fixed w-4 h-4 bg-white/30 rounded-full pointer-events-none z-50';
+            ripple.style.left = event?.clientX + 'px' || '50%';
+            ripple.style.top = event?.clientY + 'px' || '50%';
+            ripple.style.transform = 'translate(-50%, -50%) scale(0)';
+            ripple.style.animation = 'rippleEffect 0.6s ease-out forwards';
+            document.body.appendChild(ripple);
+            
+            setTimeout(() => {
+                document.body.removeChild(ripple);
+            }, 600);
+        }
+
+        // Add ripple effect CSS
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes rippleEffect {
+                to {
+                    transform: translate(-50%, -50%) scale(4);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Initialize everything
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+            showTab('home');
+            
+            // Add hover effects to social icons
+            document.querySelectorAll('.social-icon').forEach(icon => {
+                icon.addEventListener('mouseenter', function() {
+                    this.style.transform = 'scale(1.1) rotate(5deg)';
+                });
+                
+                icon.addEventListener('mouseleave', function() {
+                    this.style.transform = 'scale(1) rotate(0deg)';
+                });
+            });
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'994d7ff83020569e',t:'MTc2MTUxODg5My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
+
+
+
+
+
